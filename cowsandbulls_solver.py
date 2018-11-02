@@ -1,43 +1,41 @@
-digit_possibilities = [0] * 10
-digit_place_possibilities = [[0] * 4 for i in range(10)]
 
-def get_cows_bulls(guess, solution):
-    cows = 0
-    bulls = 0
-    for i in range(len(guess)):
-        if guess[i] == solution[i]:
-            bulls += 1
-        elif guess[i] in solution:
-            cows += 1
-    return cows, bulls
+class CowsAndBullsSolver:
+    def __init__(self):
+        self.possible_solutions = []
+        for i in range(10000):
+            a = i // 1000
+            b= (i // 100) % 10
+            c = (i // 10) % 10
+            d = i % 10
+            if a not in [b,c,d] and b not in [a,c,d] and c not in [a,b,d] and d not in [a,b,c]:
+                self.possible_solutions.append((a, b, c, d))
 
-def is_valid_solution(guess, cows, bulls, solution):
-    return (cows, bulls) == get_cows_bulls(guess, solution)
+    def is_solved(self):
+        return len(self.possible_solutions) == 1
 
-possible_solutions = []
-for i in range(10000):
-    a = i // 1000
-    b= (i // 100) % 10
-    c = (i // 10) % 10
-    d = i % 10
-    if a not in [b,c,d] and b not in [a,c,d] and c not in [a,b,d] and d not in [a,b,c]:
-        possible_solutions.append((a, b, c, d))
+    def make_guess(self):
+        print(f"{''.join(map(str, self.possible_solutions[0]))}")
+        cows = int(input("Cows: "))
+        bulls = int(input("Bulls: "))
+        self.possible_solutions = [x for x in self.possible_solutions if self.is_valid_solution(self.possible_solutions[0], cows, bulls, x)]
+    
+    def get_cows_bulls(self, guess, solution):
+        cows = 0
+        bulls = 0
+        for i in range(len(guess)):
+            if guess[i] == solution[i]:
+                bulls += 1
+            elif guess[i] in solution:
+                cows += 1
+        return cows, bulls
 
-while len(possible_solutions) > 1:
-    print(possible_solutions[0])
-    cows = int(input("Cows: "))
-    bulls = int(input("Bulls: "))
-    possible_solutions = [x for x in possible_solutions if is_valid_solution(possible_solutions[0], cows, bulls, x)]
+    def is_valid_solution(self, guess, cows, bulls, solution):
+        return (cows, bulls) == self.get_cows_bulls(guess, solution)
 
-# for number in current_guess:
-#     digit_possibilities[number] = (cows + bulls) / 4
+    def solve(self):
+        while not self.is_solved():
+            self.make_guess()
+        print(f"Answer: {''.join(map(str, self.possible_solutions[0]))}")
 
-# for i in range(4):
-#     for j in range(4):
-#         if i == j:
-#             digit_place_possibilities[current_guess[i]][i] = bulls / 4
-#         else:
-#             digit_place_possibilities[current_guess[i]][j] = cows / 4
-
-# print(digit_possibilities)
-# print(digit_place_possibilities)
+solver = CowsAndBullsSolver()
+solver.solve()
