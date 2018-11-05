@@ -13,10 +13,14 @@ class CowsAndBullsSolver:
     def is_solved(self):
         return len(self.possible_solutions) == 1
 
-    def make_guess(self):
-        print(f"{''.join(map(str, self.possible_solutions[0]))}")
-        cows = int(input("Cows: "))
-        bulls = int(input("Bulls: "))
+    def get_current_guess(self):
+        return "".join(map(str, self.possible_solutions[0]))
+
+    def make_guess(self, cows = None, bulls = None):
+        print(f"{self.get_current_guess()}")
+        if cows is None and bulls is None:
+            cows = int(input("Cows: "))
+            bulls = int(input("Bulls: "))
         self.possible_solutions = [x for x in self.possible_solutions if self.is_valid_solution(self.possible_solutions[0], cows, bulls, x)]
     
     def get_cows_bulls(self, guess, solution):
@@ -37,5 +41,6 @@ class CowsAndBullsSolver:
             self.make_guess()
         print(f"Answer: {''.join(map(str, self.possible_solutions[0]))}")
 
-solver = CowsAndBullsSolver()
-solver.solve()
+if __name__ == "__main__":
+    solver = CowsAndBullsSolver()
+    solver.solve()

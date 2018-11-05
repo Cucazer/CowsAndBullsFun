@@ -20,11 +20,15 @@ class CowsAndBullsGame:
 
     Main game class
     """
-    def __init__(self):
-        self.secret_number = str(random.randint(1000, 9999))
-        while not number_check(self.secret_number):
+    def __init__(self, secret_number = None):
+        if secret_number:
+            if not number_check(secret_number):
+                raise ValueError(f"Incorrect number {secret_number}")
+            self.secret_number = secret_number
+        else:
             self.secret_number = str(random.randint(1000, 9999))
-        self.game_solved = False
+            while not number_check(self.secret_number):
+                self.secret_number = str(random.randint(1000, 9999))
         self.cows = 0
         self.bulls = 0
         self.steps = 0
@@ -32,6 +36,10 @@ class CowsAndBullsGame:
     def detect_cows_bulls(self, myNumberStr):
         self.bulls = sum(1 if myNumberStr[i] == self.secret_number[i] else 0 for i in range(4))
         self.cows = sum(1 if myNumberStr[i] in self.secret_number and myNumberStr[i] != self.secret_number[i] else 0 for i in range(4))
+        self.steps += 1
+
+    def is_solved(self):
+        return self.bulls == 4
 
     def game_step(self):
         myNumberStr = input()
@@ -43,13 +51,10 @@ class CowsAndBullsGame:
         if self.bulls < 4:
             print("Cows: %d" % self.cows)
             print("Bulls: %d" % self.bulls)
-        else:
-            self.game_solved = True
-        self.steps += 1
 
 if __name__ == '__main__':
     game = CowsAndBullsGame()
     print("Welcome to cows&bulls game! Enter your first guess:")
-    while not game.game_solved:
+    while not game.is_solved():
         game.game_step()
     print("Congratulations, you guessed number %s in %d steps" % (game.secret_number, game.steps))
